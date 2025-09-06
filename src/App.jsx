@@ -9,32 +9,48 @@ import logo from "./Images/logo.png";
 export default function App() {
   return (
     <div className="font-sans">
-      <nav className="bg-white-900 text-green px-6 py-2 flex justify-between items-center h-16">
-        {/* Logo full height of header */}
+      {/* Animated Navbar */}
+      <motion.nav
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="bg-green-700 text-white px-8 py-4 flex justify-between items-center h-24 shadow-lg"
+      >
+        {/* Logo with hover + tap motion */}
         <Link to="/">
           <motion.img
             src={logo}
             alt="TerraCore Energy Logo"
-            className="h-full w-auto max-h-12"
-            whileHover={{ scale: 1.1 }}
+            className="h-20 w-auto"
+            whileHover={{ scale: 1.15, rotate: 2 }}
             whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
           />
         </Link>
 
         {/* Navigation Links */}
-        <div className="space-x-6 text-lg font-medium">
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/services">Services</Link>
-          <Link to="/contact">Contact</Link>
+        <div className="space-x-8 text-xl font-semibold tracking-wide">
+          <motion.div whileHover={{ scale: 1.1, color: "#FFD700" }}>
+            <Link to="/">Home</Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.1, color: "#FFD700" }}>
+            <Link to="/about">About</Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.1, color: "#FFD700" }}>
+            <Link to="/services">Services</Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.1, color: "#FFD700" }}>
+            <Link to="/contact">Contact</Link>
+          </motion.div>
         </div>
-      </nav>
+      </motion.nav>
 
+      {/* Page content with entrance motion */}
       <motion.div
-        initial={{ opacity: 0, y: 15 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="p-6"
+        transition={{ duration: 0.6 }}
+        className="p-8"
       >
         <Routes>
           <Route path="/" element={<Home />} />
