@@ -1,7 +1,6 @@
-import { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaDatabase, FaTools, FaRobot, FaLeaf, FaChalkboardTeacher } from "react-icons/fa";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -10,120 +9,210 @@ import Contact from "./pages/Contact";
 import logo from "./Images/logo.png";
 
 export default function App() {
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ left: 8, top: 80, width: 260 });
+  const btnRef = useRef(null);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
+  // compute & set dropdown position anchored to the left edge of button
+  const computePosition = () => {
+    const btn = btnRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const viewportW = window.innerWidth;
+    const desiredWidth = viewportW < 480 ? Math.min(viewportW - 16, 320) : 320; // responsive width
+    let left = Math.round(rect.left); // left edge of the Services button
+    // clamp so it won't overflow viewport
+    const margin = 8;
+    if (left + desiredWidth > viewportW - margin) {
+      left = Math.max(margin, viewportW - desiredWidth - margin);
+    }
+    if (left < margin) left = margin;
+    const top = Math.round(rect.bottom + 8); // a few px below button (viewport coords)
+    setPos({ left, top, width: desiredWidth });
+  };
+
+  // open menu (compute pos then open)
+  const openDropdown = () => {
+    computePosition();
+    setOpen(true);
+  };
+
+  // close menu
+  const closeDropdown = () => setOpen(false);
+
+  // close when clicking outside dropdown or the button
+  useEffect(() => {
+    function handleDocClick(e) {
+      if (
+        dropdownRef.current &&
+        btnRef.current &&
+        !dropdownRef.current.contains(e.target) &&
+        !btnRef.current.contains(e.target)
+      ) {
+        setOpen(false);
+      }
+    }
+    function handleKey(e) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("click", handleDocClick);
+    window.addEventListener("keydown", handleKey);
+    // reposition on resize/scroll while open
+    function onResizeScroll() {
+      if (open) computePosition();
+    }
+    window.addEventListener("resize", onResizeScroll);
+    window.addEventListener("scroll", onResizeScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("click", handleDocClick);
+      window.removeEventListener("keydown", handleKey);
+      window.removeEventListener("resize", onResizeScroll);
+      window.removeEventListener("scroll", onResizeScroll);
+    };
+  }, [open]);
+
   const goToService = (section) => {
-    setShowDropdown(false);
+    setOpen(false);
     navigate("/services", { state: { openSection: section } });
   };
 
   return (
     <div className="font-sans">
-      {/* Navbar */}
+      {/* NAVBAR */}
       <motion.nav
-        initial={{ y: -80, opacity: 0 }}
+        initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="bg-white text-gray-600 px-10 flex justify-between items-center fixed top-0 left-0 right-0 shadow-md z-50 h-24"
+        transition={{ duration: 0.32 }}
+        className="fixed top-0 left-0 right-0 bg-white shadow-md z-50"
       >
-        {/* Logo */}
-        <Link to="/">
-          <motion.img
-            src={logo}
-            alt="TerraCore Energy Logo"
-            className="h-16 w-auto"
-            whileHover={{ scale: 1.1 }}
-          />
-        </Link>
+        <div className="w-full flex items-center justify-between px-6 py-3">
+          {/* Logo pinned to left */}
+          <Link to="/" className="flex-shrink-0">
+            <motion.img
+              src={logo}
+              alt="TerraCore Energy Logo"
+              className="h-20 w-auto"
+              whileHover={{ scale: 1.06 }}
+            />
+          </Link>
 
-        {/* Nav Links */}
-        <div className="flex space-x-10 text-lg font-medium relative">
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
+          {/* Nav links on the right */}
+          <div className="flex items-center space-x-6">
+            <Link to="/" className="text-gray-700 hover:text-green-600">
+              Home
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-green-600">
+              About
+            </Link>
 
-          {/* Services Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setShowDropdown(true)}
-            onMouseLeave={() => setShowDropdown(false)}
-          >
-            <span className="cursor-pointer">Services</span>
+            {/* Services button */}
+            <div className="relative">
+              <button
+                ref={btnRef}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!open) openDropdown();
+                  else closeDropdown();
+                }}
+                className="text-gray-700 hover:text-green-600 font-medium"
+                aria-expanded={open}
+                aria-haspopup="true"
+              >
+                Services
+              </button>
 
-            <AnimatePresence>
-              {showDropdown && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute left-0 mt-2 w-80 bg-white shadow-lg rounded-md p-4 grid gap-3 z-50"
-                >
-                  <button
-                    onClick={() => goToService("digital")}
-                    className="flex items-center space-x-3 hover:text-green-600"
+              {/* Dropdown rendered as fixed positioned element (precise positioning) */}
+              <AnimatePresence>
+                {open && (
+                  <motion.div
+                    ref={dropdownRef}
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18 }}
+                    style={{
+                      position: "fixed",
+                      left: pos.left,
+                      top: pos.top,
+                      width: pos.width,
+                    }}
+                    className="bg-white rounded-md shadow-lg border border-gray-100 z-50"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <FaDatabase className="text-green-600" />
-                    <span>Energy Digital Transformation</span>
-                  </button>
+                    <ul className="p-2 space-y-1">
+                      <li>
+                        <button
+                          onClick={() => goToService("digital")}
+                          className="block w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm text-gray-700"
+                        >
+                          Energy Digital Transformation
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => goToService("consultancy")}
+                          className="block w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm text-gray-700"
+                        >
+                          Consultancy Services
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => goToService("data")}
+                          className="block w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm text-gray-700"
+                        >
+                          Data Domains
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => goToService("digital-ai")}
+                          className="block w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm text-gray-700"
+                        >
+                          Digital World (AI & Analytics)
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => goToService("energy")}
+                          className="block w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm text-gray-700"
+                        >
+                          Energy Transition
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => goToService("training")}
+                          className="block w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm text-gray-700"
+                        >
+                          Learning & Development
+                        </button>
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
-                  <button
-                    onClick={() => goToService("consultancy")}
-                    className="flex items-center space-x-3 hover:text-green-600"
-                  >
-                    <FaTools className="text-green-600" />
-                    <span>Consultancy Services</span>
-                  </button>
-
-                  <button
-                    onClick={() => goToService("data")}
-                    className="flex items-center space-x-3 hover:text-green-600"
-                  >
-                    <FaDatabase className="text-green-600" />
-                    <span>Data Domains</span>
-                  </button>
-
-                  <button
-                    onClick={() => goToService("digital-ai")}
-                    className="flex items-center space-x-3 hover:text-green-600"
-                  >
-                    <FaRobot className="text-green-600" />
-                    <span>Digital World (AI & Analytics)</span>
-                  </button>
-
-                  <button
-                    onClick={() => goToService("energy")}
-                    className="flex items-center space-x-3 hover:text-green-600"
-                  >
-                    <FaLeaf className="text-green-600" />
-                    <span>Energy Transition</span>
-                  </button>
-
-                  <button
-                    onClick={() => goToService("training")}
-                    className="flex items-center space-x-3 hover:text-green-600"
-                  >
-                    <FaChalkboardTeacher className="text-green-600" />
-                    <span>Learning & Development</span>
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Link to="/contact" className="text-gray-700 hover:text-green-600">
+              Contact
+            </Link>
           </div>
-
-          <Link to="/contact">Contact</Link>
         </div>
       </motion.nav>
 
-      {/* Page content */}
-      <motion.div className="pt-28 px-8">
+      {/* MAIN CONTENT */}
+      <main className="pt-28 px-6">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
-      </motion.div>
+      </main>
     </div>
   );
 }
