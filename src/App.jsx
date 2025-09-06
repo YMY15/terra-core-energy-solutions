@@ -3,19 +3,29 @@ import { motion } from "framer-motion";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
-import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
+import logo from "../Images/logo.png";
 
 export default function App() {
   return (
     <div className="font-sans">
-      <nav className="bg-green-700 text-white p-4 flex justify-between">
-        <h1 className="font-bold text-lg">Terra Core Energy Solutions</h1>
-        <div className="space-x-4">
+      <nav className="bg-green-700 text-white px-6 py-2 flex justify-between items-center h-16">
+        {/* Logo full height of header */}
+        <Link to="/">
+          <motion.img
+            src={logo}
+            alt="TerraCore Energy Logo"
+            className="h-full w-auto max-h-12"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          />
+        </Link>
+
+        {/* Navigation Links */}
+        <div className="space-x-6 text-lg font-medium">
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
           <Link to="/services">Services</Link>
-          <Link to="/projects">Projects</Link>
           <Link to="/contact">Contact</Link>
         </div>
       </nav>
@@ -30,7 +40,6 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </motion.div>
