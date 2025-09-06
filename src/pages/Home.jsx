@@ -1,4 +1,7 @@
 import { motion } from "framer-motion";
+import logo from "../Images/logo.png";
+import background from "../Images/Background.png";
+import { FaLinkedin, FaFacebook, FaMobileAlt } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -6,13 +9,13 @@ export default function Home() {
       {/* Hero Section with Background */}
       <section
         className="relative flex flex-col items-center justify-center min-h-screen text-center px-8 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80')",
-        }}
+        style={{ backgroundImage: `url(${background})` }}
       >
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/70"></div>
+
+        {/* Logo */}
+        <img src={logo} alt="TerraCore Energy Logo" className="relative w-32 mb-6 z-10" />
 
         <motion.h1
           className="relative text-6xl font-extrabold mb-6 text-yellow-400 z-10"
@@ -20,7 +23,7 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Terracore Energy
+          TerraCore Energy
         </motion.h1>
 
         <motion.p
@@ -29,10 +32,9 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
         >
-          Pioneering excellence in{" "}
-          <span className="text-yellow-400">oil & gas upstream</span> and{" "}
-          <span className="text-yellow-400">geoscience solutions</span>.  
-          Empowering leaders to fuel the future.
+          Pioneering excellence in {" "}
+          <span className="text-yellow-400">oil & gas upstream</span> and {" "}
+          <span className="text-yellow-400">geoscience solutions</span>. Empowering leaders to fuel the future.
         </motion.p>
 
         <motion.a
@@ -48,37 +50,33 @@ export default function Home() {
       {/* Services Section */}
       <section className="py-20 px-8 bg-gray-100 text-gray-900">
         <h2 className="text-4xl font-bold text-center mb-12">Our Expertise</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {[
             {
               title: "Geoscience",
               desc: "Advanced subsurface imaging and geological modeling.",
-              img: "https://images.unsplash.com/photo-1604937455094-efb6e1b5f7aa?auto=format&fit=crop&w=800&q=80",
             },
             {
               title: "Oil & Gas Upstream",
               desc: "Exploration, drilling, and production optimization.",
-              img: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=800&q=80",
             },
             {
               title: "Energy Advisory",
               desc: "Strategic insights for sustainable energy growth.",
-              img: "https://images.unsplash.com/photo-1581090700227-4c4d98a2efb1?auto=format&fit=crop&w=800&q=80",
+            },
+            {
+              title: "Digital Transformation",
+              desc: "Integrating technology to optimize operations and drive innovation.",
             },
           ].map((service, index) => (
             <motion.div
               key={index}
-              className="relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden"
+              className="relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transform transition duration-500 hover:scale-105"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.3, duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <img
-                src={service.img}
-                alt={service.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-20"
-              />
               <div className="relative z-10">
                 <h3 className="text-2xl font-bold text-yellow-600 mb-4">{service.title}</h3>
                 <p className="text-gray-800">{service.desc}</p>
@@ -96,19 +94,22 @@ export default function Home() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          Partner with Terracore Energy
+          Partner with TerraCore Energy
         </motion.h2>
         <p className="mb-8 max-w-2xl mx-auto">
-          From geoscience insights to upstream operations, we provide the solutions that
-          oil & gas leaders rely on.
+          From geoscience insights to upstream operations, we provide the solutions that oil & gas leaders rely on.
         </p>
-        <motion.a
-          href="/contact"
-          className="px-10 py-4 bg-gray-900 text-yellow-400 font-bold rounded-full shadow-lg hover:bg-black transition"
-          whileHover={{ scale: 1.1 }}
-        >
-          Contact Us
-        </motion.a>
+        <div className="flex justify-center gap-8 text-3xl">
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700">
+            <FaLinkedin />
+          </a>
+          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700">
+            <FaFacebook />
+          </a>
+          <a href="tel:+123456789" className="hover:text-gray-700">
+            <FaMobileAlt />
+          </a>
+        </div>
       </section>
     </div>
   );
