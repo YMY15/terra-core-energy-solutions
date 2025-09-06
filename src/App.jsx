@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
-import logo from "../Images/logo.png";
+import logo from "./Images/logo.png";
 
 export default function App() {
   return (
