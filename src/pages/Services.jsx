@@ -1,12 +1,27 @@
-export default function Services() {
-  return (
-    <div className="max-w-6xl mx-auto py-10 space-y-10">
-      <h1 className="text-4xl font-bold text-green-700 mb-6">Our Services & Solutions</h1>
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Accordion } from "../components/Accordion";
 
-      {/* Energy Digital Transformation */}
-      <section id="digital">
-        <h2 className="text-2xl font-semibold mb-4">Energy Digital Transformation</h2>
-        <ul className="list-disc pl-6 space-y-2">
+export default function Services() {
+  const location = useLocation();
+  const [openSection, setOpenSection] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.openSection) {
+      setOpenSection(location.state.openSection);
+      const el = document.getElementById(location.state.openSection);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location]);
+
+  return (
+    <div className="max-w-5xl mx-auto py-12 px-6">
+      <h1 className="text-4xl font-bold text-green-700 mb-8">Our Services & Solutions</h1>
+
+      <Accordion title="Energy Digital Transformation" id="digital" isOpen={openSection === "digital"}>
+        <ul className="list-disc space-y-2">
           <li>Subsurface Data Management</li>
           <li>Data Digitization</li>
           <li>Process Digitalization</li>
@@ -17,12 +32,10 @@ export default function Services() {
           <li>Building Data Repositories</li>
           <li>Eco7 – CMS</li>
         </ul>
-      </section>
+      </Accordion>
 
-      {/* Consultancy Services */}
-      <section id="consultancy">
-        <h2 className="text-2xl font-semibold mb-4">Consultancy Services</h2>
-        <ul className="list-disc pl-6 space-y-2">
+      <Accordion title="Consultancy Services" id="consultancy" isOpen={openSection === "consultancy"}>
+        <ul className="list-disc space-y-2">
           <li>Seismic Processing QA/QC</li>
           <li>Reservoir Characterization</li>
           <li>Cartography & GIS</li>
@@ -44,42 +57,45 @@ export default function Services() {
           <li>Business Process Outsourcing</li>
           <li>Energy Training Solutions</li>
         </ul>
-      </section>
+      </Accordion>
 
-      {/* Data Domains */}
-      <section id="data">
-        <h2 className="text-2xl font-semibold mb-4">Data Domains</h2>
-        <p className="italic">Well Data, Seismic Data, Geo Data</p>
-        {/* You can add sublists here like Well Data Management, Seismic Data Processing, etc. */}
-      </section>
-
-      {/* Digital World */}
-      <section id="digital-ai">
-        <h2 className="text-2xl font-semibold mb-4">Digital World</h2>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Advanced Data Analytics</li>
-          <li>AI/ML</li>
+      <Accordion title="Data Domains" id="data" isOpen={openSection === "data"}>
+        <ul className="list-disc space-y-2">
+          <li>Well Data Management</li>
+          <li>Well Data Processing</li>
+          <li>Well Data Compilation / QC</li>
+          <li>Seismic Data Management</li>
+          <li>Geo Data (Maps, GIS, Geospatial Analytics)</li>
         </ul>
-      </section>
+      </Accordion>
 
-      {/* Energy Transition */}
-      <section id="energy">
-        <h2 className="text-2xl font-semibold mb-4">Energy Transition</h2>
-        <ul className="list-disc pl-6 space-y-2">
+      <Accordion title="Digital World (AI & Analytics)" id="digital-ai" isOpen={openSection === "digital-ai"}>
+        <ul className="list-disc space-y-2">
+          <li>Advanced Data Analytics</li>
+          <li>AI / Machine Learning</li>
+        </ul>
+      </Accordion>
+
+      <Accordion title="Energy Transition" id="energy" isOpen={openSection === "energy"}>
+        <ul className="list-disc space-y-2">
           <li>Climate Change & Sustainability</li>
           <li>Green Hydrogen</li>
           <li>Decarbonization</li>
         </ul>
-      </section>
+      </Accordion>
 
-      {/* Training */}
-      <section id="training">
-        <h2 className="text-2xl font-semibold mb-4">Learning & Development</h2>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Training by Discipline (Geology, Geophysics, Reservoir, HSE, etc.)</li>
+      <Accordion title="Learning & Development" id="training" isOpen={openSection === "training"}>
+        <ul className="list-disc space-y-2">
+          <li>Geology, Geophysics, Petrophysics</li>
+          <li>Geomechanics, Data Management</li>
+          <li>Cartography & GIS</li>
+          <li>Reservoir & Production Engineering</li>
+          <li>Facility Engineering</li>
+          <li>Health, Safety & Environment</li>
+          <li>Renewable Energy & Green Hydrogen</li>
           <li>Excellence Programs</li>
         </ul>
-      </section>
+      </Accordion>
     </div>
   );
 }
