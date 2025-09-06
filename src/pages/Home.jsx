@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import logo from "../Images/logo.png";
 import background from "../Images/Background.png";
 import { FaLinkedin, FaFacebook, FaMobileAlt } from "react-icons/fa";
 
@@ -14,8 +13,7 @@ export default function Home() {
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/70"></div>
 
-        {/* Logo */}
-        <img src={logo} alt="TerraCore Energy Logo" className="relative w-32 mb-6 z-10" />
+
 
         <motion.h1
           className="relative text-6xl font-extrabold mb-6 text-yellow-400 z-10"
