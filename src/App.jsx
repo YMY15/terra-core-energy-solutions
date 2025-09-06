@@ -9,7 +9,7 @@ import logo from "./Images/logo.png";
 export default function App() {
   return (
     <div className="font-sans">
-      <nav className="bg-green-700 text-white px-6 py-2 flex justify-between items-center h-16">
+      <nav className="bg-white-700 text-green px-6 py-2 flex justify-between items-center h-16">
         {/* Logo full height of header */}
         <Link to="/">
           <motion.img
